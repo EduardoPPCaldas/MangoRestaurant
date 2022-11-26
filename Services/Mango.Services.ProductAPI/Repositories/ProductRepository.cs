@@ -20,14 +20,35 @@ public class ProductRepository : IProductRepository
         _db = db;
         _mapper = mapper;
     }
-    public Task<ProductDTO> CreateProduct(ProductDTO productDTO)
+    public async Task<ProductDTO> CreateProduct(ProductDTO productDTO)
     {
-        throw new NotImplementedException();
+        var product = _mapper.Map<Product>(productDTO);
+        if (product.ProductId > 0)
+        {
+            throw new Exception();
+        }
+        _db.Products.Add(product);
+        await _db.SaveChangesAsync();
+        return _mapper.Map<ProductDTO>(product);
     }
 
-    public Task<bool> DeleteProduct(int productId)
+    public async Task<bool> DeleteProduct(int productId)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var product = await _db.Products.FirstOrDefaultAsync(u => u.ProductId == productId);
+            if (product is null)
+            {
+                return false;
+            }
+            _db.Products.Remove(product);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<ProductDTO> GetProductById(int productId)
@@ -42,8 +63,15 @@ public class ProductRepository : IProductRepository
         return _mapper.Map<List<ProductDTO>>(products);
     }
 
-    public Task<ProductDTO> UpdateProduct(ProductDTO productDTO)
+    public async Task<ProductDTO> UpdateProduct(ProductDTO productDTO)
     {
-        throw new NotImplementedException();
+        var product = _mapper.Map<Product>(productDTO);
+        if (product.ProductId == 0)
+        {
+            throw new Exception();
+        }
+        _db.Update(product);
+        await _db.SaveChangesAsync();
+        return _mapper.Map<ProductDTO>(product);
     }
 }
