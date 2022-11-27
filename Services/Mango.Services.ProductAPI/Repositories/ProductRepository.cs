@@ -63,10 +63,16 @@ public class ProductRepository : IProductRepository
         return _mapper.Map<List<ProductDTO>>(products);
     }
 
-    public async Task<ProductDTO> UpdateProduct(ProductDTO productDTO)
+    public async Task<ProductDTO> UpdateProduct(int id, ProductDTO productDTO)
     {
         var product = _mapper.Map<Product>(productDTO);
-        if (product.ProductId == 0)
+        var existingProduct = await _db.Products.FirstOrDefaultAsync();
+
+        if(existingProduct is null)
+        {
+            throw new Exception();
+        }
+        if (id == 0)
         {
             throw new Exception();
         }

@@ -11,6 +11,6 @@ public interface IProductRepository
     Task<IEnumerable<ProductDTO>> GetProducts();
     Task<ProductDTO> GetProductById(int productId);
     Task<ProductDTO> CreateProduct(ProductDTO productDTO);
-    Task<ProductDTO> UpdateProduct(ProductDTO productDTO);
+    Task<ProductDTO> UpdateProduct(int id, ProductDTO productDTO);
     Task<bool> DeleteProduct(int productId);
 }
